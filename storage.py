@@ -22,11 +22,16 @@ class Storage:
         if not os.path.exists(self.filename):
             return []  # Возвращаем пустой список, если файл не существует
 
-        if self.format == 'json':
-            with open(self.filename, 'r') as f:
-                notes_data = json.load(f)
-                return [Note(**data) for data in notes_data]
-        elif self.format == 'csv':
-            with open(self.filename, 'r') as f:
-                reader = csv.reader(f, delimiter=';')
-                return [Note(row[0], row[1], row[2], row[3], row[4]) for row in reader]
+        try:
+            if self.format == 'json':
+                with open(self.filename, 'r') as f:
+                    notes_data = json.load(f)
+                    return [Note(**data) for data in notes_data]
+            elif self.format == 'csv':
+                with open(self.filename, 'r') as f:
+                    reader = csv.reader(f, delimiter=';')
+                    return [Note(row[0], row[1], row[2], row[3], row[4]) for row in reader]
+        except json.JSONDecodeError:
+            return []  # Возвращаем пустой список, если файл JSON пуст или некорректен
+
+        return []  # Возвращаем пустой список, если не удалось загрузить данные
