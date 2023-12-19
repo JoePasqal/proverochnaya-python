@@ -1,5 +1,6 @@
 import json
 import csv
+import os
 from note import Note
 
 class Storage:
@@ -18,6 +19,9 @@ class Storage:
                     writer.writerow([note.id, note.title, note.body, note.created_at, note.updated_at])
 
     def load_notes(self):
+        if not os.path.exists(self.filename):
+            return []  # Возвращаем пустой список, если файл не существует
+
         if self.format == 'json':
             with open(self.filename, 'r') as f:
                 notes_data = json.load(f)
